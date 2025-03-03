@@ -1,0 +1,9 @@
+#Source data formatted to Population Descriptors Data Model - one row per participant
+subject_id	population_descriptor	population_label	country_of_recruitment	country_of_birth
+fdsp_01	Race | Race | Ethnicity	Pakistani | Native American | Hispanic	US	United States
+fdsp_02	Race | Race | Race | Ethnicity	South Asian | White | Arab | Not Hispanic	US	United States
+fdsp_03	Race | Ethnicity	Asian | Not Hispanic	US	United States
+fdsp_04	Race | Ethnicity	Black | Not Hispanic	US	United States
+fdsp_05	Ethnicity	Bangladeshi	UK	England
+fdsp_06	Ethnicity	Pakistani	UK	Pakistan
+fdsp_07	Ethnicity | Ethnicity	Pakistani | Dutch	NED	Netherlands

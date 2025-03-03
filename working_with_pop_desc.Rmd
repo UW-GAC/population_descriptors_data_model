@@ -1,0 +1,39 @@
+---
+title: "Working with the population descriptors data model"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+Assume we start with a population descriptor table in wide format.
+
+```{r}
+pop_desc_wide <- read_tsv("example_data/individual_data_wide.tsv", comment = "#")
+```
+
+We can convert this table to long format.
+
+```{r}
+pop_desc_long <- pop_desc_wide %>%
+    separate_longer_delim(starts_with("population"), delim="|") %>%
+    mutate(across(starts_with("population"), str_trim))
+```
+
+With the table in long format, we can then pivot it to having each descriptor in a separate column, with multiple values for the same descriptor separated by a delimiter.
+
+```{r}
+race_ethn <- pop_desc_long %>%
+    pivot_wider(names_from = "population_descriptor", values_from = "population_label", 
+                values_fn = ~paste(.x, collapse="|"))
+```
+
+If our analysis doesn't allow for multiple values, we can change these values to "Multiple".
+
+```{r}
+race_ethn_mult <- race_ethn %>%
+    mutate(Race = ifelse(str_detect(Race, fixed("|")), "Multiple", Race),
+           Ethnicity = ifelse(str_detect(Ethnicity, fixed("|")), "Multiple", Ethnicity))
+```
+

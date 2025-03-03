@@ -1,0 +1,9 @@
+#Source population descriptor data
+subjectID	race	ethnicity	recruitmentSite	birthCountry
+fdsp_01	two or more: pakistani, native american	Hispanic	Los Angeles, CA	USA
+fdsp_02	two or more: south asian, white, arab	Not Hispanic	Los Angeles, CA	USA
+fdsp_03	Asian	Not Hispanic	Seattle, WA	USA
+fdsp_04	Black	Not Hispanic	Seattle, WA	USA
+fdsp_05		Asian-Bangladeshi	Birmingham, England	UK
+fdsp_06		Asian-Pakistani	Birmingham, England	PK
+fdsp_07		Pakistani, Dutch	Leiden, Netherlands	NED

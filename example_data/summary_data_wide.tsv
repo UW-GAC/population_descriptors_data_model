@@ -1,0 +1,3 @@
+#Summary data formatted to Population Descriptors Data Model - one row per study
+population_descriptor	population_labels	population_proportions	countries_of_recruitment	countries_of_birth
+mapped race/ethnicity	Admixed American | Asian American | African American | Asian European	0.14 | 0.4 | 0.14 | .3	United States | England | Netherlands	United States | England | Pakistan | Netherlands

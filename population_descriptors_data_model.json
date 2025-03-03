@@ -1,0 +1,86 @@
+{
+  "name": "Population Descriptors Data Model",
+  "description": "Data model for population descriptors in genomic data",
+  "version": "1.0",
+  "tables": [
+    {
+      "table": "population_descriptor",
+      "columns": [
+        {
+          "column": "subject_id",
+          "required": true,
+          "data_type": "string"
+        },
+        {
+          "column": "population_descriptor",
+          "required": true,
+          "description": "a concept or classification scheme that categorizes people into groups (or “populations”) according to a perceived characteristic or dimension of interest",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "Race | Race | Ethnicity",
+          "notes": "delimited list (delim is '|')"
+        },
+        {
+          "column": "population_label",
+          "required": true,
+          "description": "name given to a population that describes or classifies it according to the dimension along which it was identified",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "Black | Asian | Not Hispanic",
+          "notes": "delimited list same length as population_descriptor (delim is '|')"
+        },
+        {
+          "column": "country_of_recruitment",
+          "data_type": "string",
+          "examples": "USA"
+        },
+        {
+          "column": "country_of_birth",
+          "data_type": "string",
+          "examples": "USA"
+        }
+      ]
+    },
+    {
+      "table": "analysis",
+      "columns": [
+        {
+          "column": "population_descriptor",
+          "required": true,
+          "description": "a concept or classification scheme that categorizes people into groups (or “populations”) according to a perceived characteristic or dimension of interest",
+          "data_type": "string",
+          "examples": "reported ancestry"
+        },
+        {
+          "column": "population_labels",
+          "required": true,
+          "description": "name given to a population that describes or classifies it according to the dimension along which it was identified",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "Chinese American | European American | African American"
+        },
+        {
+          "column": "population_proportions",
+          "description": "proportion of participants from each population in the same order mapping to the values in the population_labels variable",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "0.7 | 0.1 | 0.2"
+        },
+        {
+          "column": "countries_of_recruitment",
+          "description": "Reported countries of recruitment",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "Ghana | Kenya | Nigeria"
+        },
+        {
+          "column": "countries_of_birth",
+          "description": "Reported countries of birth",
+          "data_type": "string",
+          "multi_value_delimiter": "|",
+          "examples": "Ghana | Kenya | Nigeria"
+        }
+      ]
+    }
+  ]
+}
