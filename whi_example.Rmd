@@ -1,0 +1,72 @@
+---
+title: "Example of formatting data from the Women's Health Initiative"
+output: html_notebook
+---
+
+Data obtained from [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) accession [phs000200.v12.p3](https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000200.v12.p3)
+
+Form 2 has race/ethnicity data for the majority of participants. Form 41 has additional information on Hispanic/Latino and Asian/Pacific Islander groups.
+
+```{r}
+library(tidyverse)
+dat <- read_tsv("phs000200.v12.pht000998.v6.p3.c1.f2_rel1.HMB-IRB.txt.gz", comment = "#", col_types=cols(.default=col_character()))
+dat2 <- read_tsv("phs000200.v12.pht001009.v6.p3.c1.f41_rel1.HMB-IRB.txt.gz", comment = "#", col_types=cols(.default=col_character()))
+```
+
+The first population descriptor is Race, which we read from the "RACE" column in Form 2. The meaning of the encoded values is specified in the data dictionary.
+
+```{r}
+map <- c("1"="American Indian or Alaskan Native", "2"="Asian or Pacific Islander", "3"="Black or African American", "4"="Hispanic/Latino", "5"="White (not of Hispanic origin)", "8"="Other")
+
+pop <- dat %>%
+  mutate(population_descriptor = "Race",
+         population_label = map[RACE]) %>%
+  select(subject_id = SUBJID, population_descriptor, population_label) %>%
+  mutate(country_of_recruitment = "USA")
+```
+
+The second population descriptor is "Hispanic group", which we read from the "SPANISH" column in Form 41. The meaning of the encoded values is specified in the data dictionary.
+
+```{r}
+map <- c("0"="not Hispanic", "1"="Puerto Rican", "2"="Mexican/MexicanAmerican, Chicano", "3"="Cuban", "4"="Other Hispanic")
+pop2 <- dat2 %>%
+  mutate(desc2 = "Hispanic group",
+         lab2 = map[SPANISH]) %>%
+  select(subject_id = SUBJID, desc2, lab2)
+
+pop <- pop %>%
+  left_join(pop2, by="subject_id") %>%
+  mutate(population_descriptor = ifelse(!is.na(lab2), paste(population_descriptor, desc2, sep="|"), population_descriptor),
+         population_label = ifelse(!is.na(lab2), paste(population_label, lab2, sep="|"), population_label)) %>%
+  select(-desc2, -lab2)
+```
+
+Form 41 has a separate column for each Asian or Pacific Islander group with values 0/1, which requires more extensive data manipulation to map to a single column.
+
+```{r}
+labels <- c("ASIAINDIAN", "CHINESE", "FILIPINO", "JAPANESE", "KOREAN", "VIETNAMESE", "OTHERASIAN", "HAWAIIAN", "GUAMANIAN", "SAMOAN", "OTHRPACISL")
+pop3 <- dat2 %>%
+  select(subject_id = SUBJID, all_of(labels)) %>%
+  pivot_longer(-subject_id, names_to = "lab3", values_to = "index") %>%
+  filter(!is.na(index), index != 0) %>%
+  select(-index) %>%
+  group_by(subject_id) %>%
+  summarise(lab3 = paste(lab3, collapse="|"),
+            desc3 = paste(rep("Asian or Pacific Islander group", n()), collapse="|"))
+
+pop <- pop %>%
+  left_join(pop3, by="subject_id") %>%
+  mutate(population_descriptor = ifelse(!is.na(lab3), paste(population_descriptor, desc3, sep="|"), population_descriptor),
+         population_label = ifelse(!is.na(lab3), paste(population_label, lab3, sep="|"), population_label)) %>%
+  select(-desc3, -lab3)
+write_tsv(pop, "WHI_population_descriptor.tsv")
+```
+
+We can also convert the data to long format, with one row per population_label.
+
+```{r}
+pop_long <- pop
+    separate_longer_delim(starts_with("population"), delim="|") %>%
+    mutate(across(starts_with("population"), str_trim))
+write_tsv(pop_long, "WHI_population_descriptor_long.tsv")
+```
