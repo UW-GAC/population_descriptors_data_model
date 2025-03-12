@@ -13,7 +13,7 @@ Assume we start with a population descriptor table in wide format.
 pop_desc_wide <- read_tsv("example_data/individual_data_wide.tsv", comment = "#")
 ```
 
-We can convert this table to long format.
+We can convert this table to long format, removing leading and trailing whitespace from strings.
 
 ```{r}
 pop_desc_long <- pop_desc_wide %>%
